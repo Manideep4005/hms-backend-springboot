@@ -1,7 +1,7 @@
 package com.hms.service;
 
 import com.hms.dto.AppointmentResponse;
-import com.hms.dto.BillItemDto;
+// import com.hms.dto.BillItemDto;
 import com.hms.dto.BillResponseDto;
 import com.hms.dto.ChangePasswordRequest;
 import com.hms.dto.DoctorAvailabilityRequest;

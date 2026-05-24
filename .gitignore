@@ -11,7 +11,6 @@ target/
 .project
 .settings
 .springBeans
-application.yml
 .sts4-cache
 
 ### IntelliJ IDEA ###
@@ -29,7 +28,6 @@ application.yml
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
-application.yml
 ### VS Code ###
 .vscode/
 .env

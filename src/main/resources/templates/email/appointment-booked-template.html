@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Appointment Confirmation</title>
+</head>
+
+<body style="margin:0; padding:0; background-color:#f4f6f8; font-family: Arial, sans-serif;">
+
+    <div
+        style="max-width:600px; margin:30px auto; background:#ffffff; border-radius:10px; overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,0.05);">
+
+        <!-- Header -->
+        <div style="background:#17a2b8; padding:20px; text-align:center;">
+            <h2 style="color:#ffffff; margin:0;">Appointment Confirmed</h2>
+        </div>
+
+        <!-- Body -->
+        <div style="padding:25px; color:#333;">
+
+            <p style="font-size:15px;">Dear <b th:text="${patientName}">Patient</b>,</p>
+
+            <p style="font-size:14px;">
+                Your appointment has been successfully booked with
+                <b>Dr. <span th:text="${doctorName}">Doctor</span></b>.
+            </p>
+
+            <!-- Appointment Card -->
+            <div style="margin:20px 0; padding:15px; border-radius:8px; background:#f9fbfc; border:1px solid #e3e8ee;">
+                <p style="margin:5px 0;"><b>Date & Time:</b> <span th:text="${date}">Date</span></p>
+                <p style="margin:5px 0;"><b>Consultation Fee:</b> ₹<span th:text="${consultationFee}">0</span></p>
+            </div>
+
+            <!-- Payment Info -->
+            <div style="margin-top:15px; padding:15px; border-left:4px solid #17a2b8; background:#f1f9fb;">
+                <p style="margin:0; font-size:14px;">
+                    💳 <b>Payment Options:</b><br>
+                    You can pay the consultation fee <b>online</b> before your visit or
+                    <b>at the hospital counter</b> during check-in.
+                </p>
+            </div>
+
+            <!-- Instructions -->
+            <p style="margin-top:20px; font-size:14px;">
+                Please arrive at least <b>10 minutes early</b> for a smooth check-in process.
+            </p>
+
+            <!-- Footer -->
+            <p style="margin-top:25px; font-size:14px;">
+                Best Regards,<br>
+                <b>The HMS Team</b>
+            </p>
+
+        </div>
+
+        <!-- Bottom Footer -->
+        <div style="background:#f4f6f8; padding:15px; text-align:center; font-size:12px; color:#888;">
+            © 2026 HMS. All rights reserved.
+        </div>
+
+    </div>
+
+</body>
+
+</html>

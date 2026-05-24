@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to HMS</title>
+</head>
+
+<body style="margin:0; padding:0; background-color:#f5f7fb; font-family:Arial, Helvetica, sans-serif; color:#333;">
+
+    <div style="max-width:600px; margin:40px auto; background:#ffffff; border-radius:10px; box-shadow:0 8px 25px rgba(0,0,0,0.05); overflow:hidden;">
+
+        <!-- Header -->
+        <div style="padding:24px 30px; border-bottom:1px solid #f0f0f0;">
+            <h2 style="margin:0; font-size:18px; color:#0056b3; font-weight:600;">
+                Hospital Management System
+            </h2>
+        </div>
+
+        <!-- Content -->
+        <div style="padding:35px 30px; line-height:1.7; font-size:15px;">
+
+            <h3 style="margin-top:0; color:#111; font-size:20px; font-weight:600;">
+                Welcome to HMS
+            </h3>
+
+            <p>
+                Dear <span style="color:#0056b3; font-weight:600;" th:text="${firstName}"></span> <span style="color:#0056b3; font-weight:600;" th:text="${lastName}">User</span>,
+            </p>
+
+            <p>
+                Your account has been successfully created in the
+                <strong>Hospital Management System (HMS)</strong>.
+            </p>
+
+            <div style="margin:20px 0; padding:14px 16px; background:#f7f9fc; border-radius:6px; border-left:4px solid #0056b3;">
+                Registered Role:
+                <strong style="color:#0056b3;" th:text="${roleName}">Role</strong>
+            </div>
+
+            <p>
+                You can now access the system and start using the services
+                associated with your role.
+            </p>
+
+            <p style="margin-top:30px;">
+                Best Regards,<br>
+                <strong>HMS Administration Team</strong>
+            </p>
+
+        </div>
+
+        <!-- Footer -->
+        <div style="padding:20px 30px; font-size:12px; color:#777; border-top:1px solid #f0f0f0; background:#fafbfc;">
+            Hospital Management System<br>
+            Secure Healthcare Platform
+        </div>
+
+    </div>
+
+</body>
+</html>

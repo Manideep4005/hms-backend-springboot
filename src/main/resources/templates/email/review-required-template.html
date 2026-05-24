@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Medical Review Required</title>
+</head>
+
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <div
+        style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-top: 5px solid #ffc107; border-radius: 8px;">
+        <h2 style="color: #ffc107;">Review Appointment Reminder</h2>
+        <p>Dear <span th:text="${patientName}">Patient</span>,</p>
+        <p>Following your recent appointment, <b>Dr. <span th:text="${doctorName}">Doctor</span></b> has requested a
+            follow-up review.</p>
+        <p><b>Suggested Review Timeframe:</b> <span th:text="${reviewPeriod}">days</span></p>
+        <p>Please log in to your account and book a follow-up appointment within this period to ensure your continued
+            care.</p>
+        <p>Best Regards,<br>The HMS Team</p>
+    </div>
+</body>
+
+</html>

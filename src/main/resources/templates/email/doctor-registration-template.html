@@ -1,0 +1,130 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Doctor Account Created</title>
+  </head>
+
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      background-color: #f5f7fb;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #333;
+    "
+  >
+    <div
+      style="
+        max-width: 600px;
+        margin: 40px auto;
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+      "
+    >
+      <!-- Header -->
+      <div style="padding: 24px 30px; border-bottom: 1px solid #f0f0f0">
+        <h2
+          style="margin: 0; font-size: 18px; color: #0056b3; font-weight: 600"
+        >
+          Hospital Management System
+        </h2>
+      </div>
+
+      <!-- Content -->
+      <div style="padding: 35px 30px; line-height: 1.7; font-size: 15px">
+        <h3
+          style="margin-top: 0; color: #111; font-size: 20px; font-weight: 600"
+        >
+          Doctor Account Created
+        </h3>
+
+        <p>
+          Dear
+          <span style="color: #0056b3; font-weight: 600" th:text="${firstName}"
+            >Doctor</span
+          >,
+        </p>
+
+        <p>
+          Your <strong>Doctor account</strong> has been successfully created in
+          the <strong>Hospital Management System (HMS)</strong>.
+        </p>
+
+        <!-- Credentials Box -->
+        <div
+          style="
+            margin: 20px 0;
+            padding: 16px;
+            background: #f7f9fc;
+            border-radius: 6px;
+            border-left: 4px solid #0056b3;
+          "
+        >
+          <p style="margin: 0 0 10px 0; font-weight: 600">Login Credentials</p>
+
+          <p style="margin: 5px 0">
+            <strong>Email:</strong><br />
+            <span style="color: #0056b3; font-weight: 600" th:text="${email}"
+              >doctor@example.com</span
+            >
+          </p>
+
+          <p style="margin: 10px 0 0 0">
+            <strong>Temporary Password:</strong><br />
+            <span
+              style="color: #0056b3; font-weight: 600"
+              th:text="${tempPassword}"
+              >Temp@1234</span
+            >
+          </p>
+        </div>
+
+        <!-- Warning -->
+        <div
+          style="
+            margin: 20px 0;
+            padding: 14px 16px;
+            background: #fff4f4;
+            border-radius: 6px;
+            border-left: 4px solid #dc3545;
+          "
+        >
+          <strong style="color: #dc3545">Security Notice:</strong>
+
+          <p style="margin: 8px 0 0 0">
+            Please login using the above credentials and
+            <strong>change your password immediately</strong>
+            to ensure your account security.
+          </p>
+        </div>
+
+        <p>
+          If you did not expect this account, please contact the administrator
+          immediately.
+        </p>
+
+        <p style="margin-top: 30px">
+          Regards,<br />
+          <strong>HMS Administration Team</strong>
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <div
+        style="
+          padding: 20px 30px;
+          font-size: 12px;
+          color: #777;
+          border-top: 1px solid #f0f0f0;
+          background: #fafbfc;
+        "
+      >
+        Hospital Management System<br />
+        Secure Healthcare Platform
+      </div>
+    </div>
+  </body>
+</html>

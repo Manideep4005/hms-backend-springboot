@@ -31,7 +31,8 @@ public class EmailService {
             String process = templateEngine.process("email/registration-template", context);
             sendHtmlMessage(to, "Welcome to HMS", process);
         } catch (Exception e) {
-            System.err.println("Failed to send Registration email: " + e.getMessage());
+            System.err.println("Failed to send Registration email");
+            e.printStackTrace();
         }
     }
 
@@ -44,7 +45,8 @@ public class EmailService {
             String process = templateEngine.process("email/password-change-template", context);
             sendHtmlMessage(to, "Password Changed Successfully", process);
         } catch (Exception e) {
-            System.err.println("Failed to send Password Change email: " + e.getMessage());
+            System.err.println("Failed to send Password Change email: ");
+            e.printStackTrace();
         }
     }
 
@@ -61,7 +63,8 @@ public class EmailService {
             String process = templateEngine.process("email/appointment-booked-template", context);
             sendHtmlMessage(to, "Appointment Confirmation", process);
         } catch (Exception e) {
-            System.err.println("Failed to send Appointment Booked email: " + e.getMessage());
+            System.err.println("Failed to send Appointment Booked email: ");
+            e.printStackTrace();
         }
     }
 
@@ -76,20 +79,27 @@ public class EmailService {
             String process = templateEngine.process("email/review-required-template", context);
             sendHtmlMessage(to, "Medical Review Required", process);
         } catch (Exception e) {
-            System.err.println("Failed to send Review Required email: " + e.getMessage());
+            System.err.println("Failed to send Review Required email: ");
+            e.printStackTrace();
         }
     }
 
     private void sendHtmlMessage(String to, String subject, String htmlBody) throws MessagingException {
+
         MimeMessage message = javaMailSender.createMimeMessage();
+
         MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+        helper.setFrom("hms2systems@gmail.com");
+
         helper.setTo(to);
+
         helper.setSubject(subject);
+
         helper.setText(htmlBody, true);
 
-        // Uncomment below to actually send. Since it's a dummy email config, we will
-        // get errors.
         javaMailSender.send(message);
+
         System.out.println("Email sent successfully to: " + to);
     }
 
@@ -104,11 +114,12 @@ public class EmailService {
             String process = templateEngine.process("email/doctor-registration-template", context);
             sendHtmlMessage(to, "Your HMS Doctor Account Credentials", process);
         } catch (Exception e) {
-            System.err.println("Failed to send Doctor Registration email: " + e.getMessage());
+            System.err.println("Failed to send Doctor Registration email: ");
+            e.printStackTrace();
         }
     }
 
-    @Async
+    // @Async
     public void sendForgotPasswordOtpEmail(String to, String firstName, String otp) {
         try {
             Context context = new Context();
@@ -119,7 +130,8 @@ public class EmailService {
             sendHtmlMessage(to, "Your HMS Password Reset OTP", process);
 
         } catch (Exception e) {
-            System.err.println("Failed to send Forgot Password OTP email: " + e.getMessage());
+            System.err.println("Failed to send Forgot Password OTP email");
+            e.printStackTrace();
         }
     }
 
@@ -133,7 +145,8 @@ public class EmailService {
             sendHtmlMessage(to, "Your HMS Password Has Been Reset", process);
 
         } catch (Exception e) {
-            System.err.println("Failed to send Password Reset Success email: " + e.getMessage());
+            System.err.println("Failed to send Password Reset Success email: ");
+            e.printStackTrace();
         }
     }
 }

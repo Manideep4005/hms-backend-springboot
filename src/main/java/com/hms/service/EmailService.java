@@ -119,7 +119,7 @@ public class EmailService {
         }
     }
 
-    // @Async
+    @Async
     public void sendForgotPasswordOtpEmail(String to, String firstName, String otp) {
         try {
             Context context = new Context();

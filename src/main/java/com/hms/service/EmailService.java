@@ -12,11 +12,20 @@ import org.thymeleaf.context.Context;
 @Service
 public class EmailService {
 
-    private final JavaMailSender javaMailSender;
+    // private final JavaMailSender javaMailSender;
+    // private final TemplateEngine templateEngine;
+
+    // public EmailService(JavaMailSender javaMailSender, TemplateEngine
+    // templateEngine) {
+    // this.javaMailSender = javaMailSender;
+    // this.templateEngine = templateEngine;
+    // }
+
+    private final BrevoEmailService brevoEmailService;
     private final TemplateEngine templateEngine;
 
-    public EmailService(JavaMailSender javaMailSender, TemplateEngine templateEngine) {
-        this.javaMailSender = javaMailSender;
+    public EmailService(BrevoEmailService brevoEmailService, TemplateEngine templateEngine) {
+        this.brevoEmailService = brevoEmailService;
         this.templateEngine = templateEngine;
     }
 
@@ -86,21 +95,23 @@ public class EmailService {
 
     private void sendHtmlMessage(String to, String subject, String htmlBody) throws MessagingException {
 
-        MimeMessage message = javaMailSender.createMimeMessage();
+        // MimeMessage message = javaMailSender.createMimeMessage();
 
-        MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+        // MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-        helper.setFrom("hms2systems@gmail.com");
+        // helper.setFrom("hms2systems@gmail.com");
 
-        helper.setTo(to);
+        // helper.setTo(to);
 
-        helper.setSubject(subject);
+        // helper.setSubject(subject);
 
-        helper.setText(htmlBody, true);
+        // helper.setText(htmlBody, true);
 
-        javaMailSender.send(message);
+        // javaMailSender.send(message);
 
-        System.out.println("Email sent successfully to: " + to);
+        // System.out.println("Email sent successfully to: " + to);
+
+        brevoEmailService.sendEmail(to, subject, htmlBody);
     }
 
     @Async

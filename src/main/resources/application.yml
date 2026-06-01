@@ -37,5 +37,9 @@ logging:
   level:
     org.springframework: DEBUG
 
+brevo:
+  api-key: ${BREVO_API_KEY}
+  sender-email: systems2hms@gmail.com
+
 server:
   port: ${PORT:8081}

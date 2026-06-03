@@ -182,8 +182,9 @@ public class PatientService {
                 patient.getEmail(),
                 patient.getFirstName(),
                 doctor.getFirstName() + " " + doctor.getLastName(),
-                request.getAppointmentDate().toString(),
-                bill.getTotalAmount());
+                request.getAppointmentDate(),
+                bill.getTotalAmount(),
+                saved.getId());
     }
 
     public void cancelAppointment(Long appointmentId, String email) {

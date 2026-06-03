@@ -2,6 +2,11 @@ package com.hms.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -30,15 +35,26 @@ public class EmailService {
     }
 
     @Async
-    public void sendRegistrationEmail(String to, String firstName, String lastName, String roleName) {
+    public void sendRegistrationEmail(
+            String to,
+            String firstName,
+            String lastName,
+            String roleName) {
+
         try {
             Context context = new Context();
+
             context.setVariable("firstName", firstName);
             context.setVariable("lastName", lastName);
             context.setVariable("roleName", roleName);
+            context.setVariable("email", to);
 
-            String process = templateEngine.process("email/registration-template", context);
+            String process = templateEngine.process(
+                    "email/registration-template",
+                    context);
+
             sendHtmlMessage(to, "Welcome to HMS", process);
+
         } catch (Exception e) {
             System.err.println("Failed to send Registration email");
             e.printStackTrace();
@@ -60,19 +76,35 @@ public class EmailService {
     }
 
     @Async
-    public void sendAppointmentBookedEmail(String to, String patientName, String doctorName, String date,
-            Double consultationFee) {
+    public void sendAppointmentBookedEmail(
+            String to,
+            String patientName,
+            String doctorName,
+            LocalDateTime appointmentDate,
+            Double consultationFee,
+            Long appointmentId) {
+
         try {
             Context context = new Context();
+
+            String formattedDate = appointmentDate.format(
+                    DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a"));
+
+            String formattedFee = String.format("%.2f", consultationFee);
+
             context.setVariable("patientName", patientName);
             context.setVariable("doctorName", doctorName);
-            context.setVariable("date", date);
-            context.setVariable("consultationFee", consultationFee);
+            context.setVariable("date", formattedDate);
+            context.setVariable("consultationFee", formattedFee);
+            context.setVariable("appointmentId", appointmentId);
 
-            String process = templateEngine.process("email/appointment-booked-template", context);
-            sendHtmlMessage(to, "Appointment Confirmation", process);
+            String html = templateEngine.process(
+                    "email/appointment-booked-template",
+                    context);
+
+            sendHtmlMessage(to, "Appointment Confirmed - HMS", html);
+
         } catch (Exception e) {
-            System.err.println("Failed to send Appointment Booked email: ");
             e.printStackTrace();
         }
     }

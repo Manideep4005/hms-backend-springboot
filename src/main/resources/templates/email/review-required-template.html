@@ -1,23 +1,268 @@
+```html
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
-    <title>Medical Review Required</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Review Reminder</title>
 </head>
 
-<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-    <div
-        style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-top: 5px solid #ffc107; border-radius: 8px;">
-        <h2 style="color: #ffc107;">Review Appointment Reminder</h2>
-        <p>Dear <span th:text="${patientName}">Patient</span>,</p>
-        <p>Following your recent appointment, <b>Dr. <span th:text="${doctorName}">Doctor</span></b> has requested a
-            follow-up review.</p>
-        <p><b>Suggested Review Timeframe:</b> <span th:text="${reviewPeriod}">days</span></p>
-        <p>Please log in to your account and book a follow-up appointment within this period to ensure your continued
-            care.</p>
-        <p>Best Regards,<br>The HMS Team</p>
-    </div>
+<body style="
+    margin:0;
+    padding:0;
+    background-color:#f4f7fa;
+    font-family:Arial, Helvetica, sans-serif;">
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f4f7fa; padding:30px 0;">
+
+        <tr>
+            <td align="center">
+
+                <table width="600" cellpadding="0" cellspacing="0" border="0" style="
+                    background:#ffffff;
+                    border-radius:12px;
+                    overflow:hidden;
+                    box-shadow:0 4px 16px rgba(0,0,0,0.08);">
+
+                    <!-- Header -->
+                    <tr>
+                        <td align="center" style="
+                            background:#ffc107;
+                            padding:30px;">
+
+                            <h1 style="
+                                margin:0;
+                                color:#212529;
+                                font-size:28px;">
+                                HMS
+                            </h1>
+
+                            <p style="
+                                margin-top:8px;
+                                color:#5f4b00;
+                                font-size:14px;">
+                                Hospital Management System
+                            </p>
+
+                        </td>
+                    </tr>
+
+                    <!-- Medical Icon -->
+                    <tr>
+                        <td align="center" style="padding-top:25px;">
+
+                            <div style="font-size:54px;">
+                                🩺
+                            </div>
+
+                        </td>
+                    </tr>
+
+                    <!-- Title -->
+                    <tr>
+                        <td align="center" style="padding:10px 30px 0 30px;">
+
+                            <h2 style="
+                                margin:0;
+                                color:#212529;">
+                                Follow-up Review Recommended
+                            </h2>
+
+                        </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                        <td style="padding:25px 40px;">
+
+                            <p style="
+                                color:#444;
+                                font-size:15px;">
+
+                                Dear
+                                <strong th:text="${patientName}">
+                                    Patient
+                                </strong>,
+
+                            </p>
+
+                            <p style="
+                                color:#555;
+                                line-height:1.8;
+                                font-size:15px;">
+
+                                Following your recent consultation,
+                                <strong>
+                                    Dr.
+                                    <span th:text="${doctorName}">
+                                        Doctor Name
+                                    </span>
+                                </strong>
+                                has recommended a follow-up review to monitor
+                                your progress and ensure the best possible care.
+
+                            </p>
+
+                            <!-- Review Card -->
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="
+                                margin-top:20px;
+                                background:#fff8e1;
+                                border:1px solid #ffe082;
+                                border-radius:10px;">
+
+                                <tr>
+                                    <td style="padding:20px;">
+
+                                        <p style="
+                                            margin:0;
+                                            color:#6b5200;
+                                            font-size:14px;">
+
+                                            <strong>
+                                                Recommended Follow-up Period
+                                            </strong>
+
+                                        </p>
+
+                                        <p style="
+                                            margin-top:10px;
+                                            font-size:28px;
+                                            font-weight:bold;
+                                            color:#212529;">
+
+                                            <span th:text="${reviewPeriod}">
+                                                30
+                                            </span>
+                                            Days
+
+                                        </p>
+
+                                    </td>
+                                </tr>
+
+                            </table>
+
+                            <!-- Important Note -->
+                            <div style="
+                                margin-top:20px;
+                                padding:18px;
+                                background:#f8f9fa;
+                                border-left:5px solid #ffc107;
+                                border-radius:5px;">
+
+                                <p style="
+                                    margin:0;
+                                    color:#555;
+                                    font-size:14px;
+                                    line-height:1.7;">
+
+                                    📌 <strong>Why is a follow-up important?</strong>
+
+                                    <br><br>
+
+                                    Follow-up reviews help your doctor assess
+                                    treatment effectiveness, monitor recovery,
+                                    adjust medications if necessary, and address
+                                    any concerns that may have arisen since your
+                                    last visit.
+
+                                </p>
+
+                            </div>
+
+                            <!-- Reminder -->
+                            <div style="
+                                margin-top:20px;
+                                padding:18px;
+                                background:#e8f5e9;
+                                border-left:5px solid #28a745;
+                                border-radius:5px;">
+
+                                <p style="
+                                    margin:0;
+                                    color:#333;
+                                    font-size:14px;
+                                    line-height:1.7;">
+
+                                    ⏰ We encourage you to schedule your review
+                                    appointment within the recommended timeframe
+                                    to maintain continuity of care.
+
+                                </p>
+
+                            </div>
+
+                            <!-- CTA Button -->
+                            <div style="
+                                text-align:center;
+                                margin-top:30px;">
+
+                                <a href="#" style="
+                                    background:#ffc107;
+                                    color:#212529;
+                                    text-decoration:none;
+                                    padding:14px 30px;
+                                    border-radius:6px;
+                                    display:inline-block;
+                                    font-weight:bold;">
+
+                                    Book Follow-up Appointment
+
+                                </a>
+
+                            </div>
+
+                            <p style="
+                                margin-top:30px;
+                                color:#555;
+                                line-height:1.8;">
+
+                                Thank you for trusting HMS with your healthcare.
+                                We look forward to supporting your continued
+                                well-being.
+
+                            </p>
+
+                            <p style="
+                                color:#444;
+                                margin-top:25px;">
+
+                                Regards,
+                                <br>
+                                <strong>HMS Team</strong>
+
+                            </p>
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td align="center" style="
+                            background:#f8f9fa;
+                            padding:20px;
+                            font-size:12px;
+                            color:#6c757d;">
+
+                            © 2026 HMS Hospital Management System
+
+                            <br><br>
+
+                            This is an automated healthcare notification.
+                            Please do not reply to this email.
+
+                        </td>
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+
+    </table>
+
 </body>
 
 </html>
+```

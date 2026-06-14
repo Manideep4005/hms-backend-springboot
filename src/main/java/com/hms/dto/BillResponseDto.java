@@ -23,6 +23,7 @@ public class BillResponseDto {
     @JsonFormat(pattern = "dd MMM yyyy HH:mm")
     private LocalDateTime appointmentDate;
     private List<BillItemDto> items;
+    private String patientName;
 
     public BillResponseDto() {
     }
@@ -31,7 +32,7 @@ public class BillResponseDto {
             Double totalAmount, String status,
             LocalDateTime billDate,
             List<BillItemDto> items, Long appointmentId, String doctorName, String specialization,
-            LocalDateTime appointmentDate) {
+            LocalDateTime appointmentDate, String patientName) {
         this.id = id;
         this.amount = amount;
         this.discount = discount;
@@ -44,6 +45,7 @@ public class BillResponseDto {
         this.doctorName = doctorName;
         this.specialization = specialization;
         this.appointmentDate = appointmentDate;
+        this.patientName = patientName;
     }
 
     // getters & setters
@@ -141,5 +143,13 @@ public class BillResponseDto {
 
     public void setAppointmentDate(LocalDateTime appointmentDate) {
         this.appointmentDate = appointmentDate;
+    }
+
+    public String getPatientName() {
+        return patientName;
+    }
+
+    public void setPatientName(String patientName) {
+        this.patientName = patientName;
     }
 }

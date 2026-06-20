@@ -7,7 +7,6 @@ import com.hms.dto.BillResponseDto;
 import com.hms.dto.ChangePasswordRequest;
 import com.hms.dto.DoctorResponse;
 import com.hms.dto.UserProfileDto;
-import com.hms.entity.Bill;
 import com.hms.entity.DoctorAvailability;
 import com.hms.entity.User;
 import com.hms.service.AdminService;

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMS Account Created</title>
+</head>
+
+<body style="margin:0; padding:0; background:#f4f7fa; font-family:Arial, Helvetica, sans-serif;">
+
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f7fa; padding:40px 0;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" border="0"
+                    style="background:#ffffff; border-radius:8px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+
+                    <!-- Header -->
+                    <tr>
+                        <td align="center" style="background:#0d6efd; padding:25px 20px;">
+                            <h1 style="margin:0; color:#ffffff; font-size:24px; font-weight:600;">HMS</h1>
+                            <p style="margin:4px 0 0 0; color:#ffffff; opacity:0.8; font-size:13px;">Hospital Management
+                                System</p>
+                        </td>
+                    </tr>
+
+                    <!-- Body -->
+                    <tr>
+                        <td style="padding:35px 40px 30px 40px;">
+
+                            <p style="margin:0 0 20px 0; color:#333; font-size:15px; line-height:1.6;">
+                                Dear <strong><span th:text="${firstName}">John</span> <span
+                                        th:text="${lastName}">Doe</span></strong>,
+                            </p>
+
+                            <p style="margin:0 0 25px 0; color:#555; font-size:15px; line-height:1.7;">
+                                Your account has been created successfully. Below are your login credentials.
+                            </p>
+
+                            <!-- Account Details -->
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:20px;">
+                                <tr>
+                                    <td style="padding:15px 20px; background:#f8f9fa; border-radius:6px;">
+                                        <p style="margin:0 0 10px 0; color:#0d6efd; font-size:14px; font-weight:600;">
+                                            Account Details</p>
+                                        <p style="margin:4px 0; color:#333; font-size:14px;"><strong>Name:</strong>
+                                            <span th:text="${firstName}">John</span> <span
+                                                th:text="${lastName}">Doe</span></p>
+                                        <p style="margin:4px 0; color:#333; font-size:14px;"><strong>Email:</strong>
+                                            <span th:text="${email}">user@example.com</span></p>
+                                        <p style="margin:4px 0; color:#333; font-size:14px;"><strong>Role:</strong>
+                                            <span th:text="${roleName}"
+                                                style="text-transform:uppercase; font-weight:600;">Doctor</span></p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Credentials -->
+                            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:25px;">
+                                <tr>
+                                    <td style="padding:15px 20px; background:#fff8e1; border-radius:6px;">
+                                        <p style="margin:0 0 10px 0; color:#e65100; font-size:14px; font-weight:600;">
+                                            Temporary Password</p>
+                                        <p style="margin:4px 0; color:#333; font-size:14px;"><strong>Email:</strong>
+                                            <span th:text="${email}">user@example.com</span></p>
+                                        <p style="margin:4px 0; color:#333; font-size:14px;"><strong>Password:</strong>
+                                            <span th:text="${tempPassword}"
+                                                style="font-family:monospace; font-weight:600;">Temp@123</span></p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Security Notice -->
+                            <div
+                                style="margin-bottom:25px; padding:15px 20px; background:#f8f9fa; border-left:3px solid #dc3545; border-radius:4px;">
+                                <p style="margin:0; color:#333; font-size:13px; line-height:1.6;">
+                                    <strong>Important:</strong> This password is temporary. Please change it after your
+                                    first login.
+                                </p>
+                            </div>
+
+                            <p style="margin:0 0 20px 0; color:#555; font-size:15px; line-height:1.7;">
+                                For any assistance, contact the HMS Administrator.
+                            </p>
+
+                            <p style="margin:25px 0 0 0; color:#333; font-size:14px; line-height:1.6;">
+                                Regards,<br>
+                                <strong>HMS Administration Team</strong>
+                            </p>
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td align="center" style="background:#f8f9fa; padding:18px 20px; border-top:1px solid #e9ecef;">
+                            <p style="margin:0; color:#6c757d; font-size:12px;">&copy; 2026 HMS Hospital Management
+                                System</p>
+                            <p style="margin:3px 0 0 0; color:#6c757d; font-size:12px;">This is an automated message.
+                                Please do not reply.</p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+
+</body>
+
+</html>

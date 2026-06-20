@@ -90,13 +90,31 @@ public class DoctorService {
     }
 
     public void changePassword(String email, ChangePasswordRequest request) {
+
         User doctor = getDoctorByEmail(email);
-        if (!passwordEncoder.matches(request.getOldPassword(), doctor.getPassword())) {
-            throw new RuntimeException("Incorrect old password");
+
+        if (!doctor.isPasswordChangeRequired()) {
+
+            if (!passwordEncoder.matches(
+                    request.getOldPassword(),
+                    doctor.getPassword())) {
+
+                throw new RuntimeException(
+                        "Incorrect old password");
+            }
         }
-        doctor.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+        doctor.setPassword(
+                passwordEncoder.encode(
+                        request.getNewPassword()));
+
+        doctor.setPasswordChangeRequired(false);
+
         userRepository.save(doctor);
-        emailService.sendPasswordChangeEmail(doctor.getEmail(), doctor.getFirstName());
+
+        emailService.sendPasswordChangeEmail(
+                doctor.getEmail(),
+                doctor.getFirstName());
     }
 
     public Map<String, Long> getDoctorAppointmentStats(String email) {

@@ -16,11 +16,11 @@ public class DataInitializer {
         return args -> {
 
             List<String> roles = List.of(
-                "ADMIN",
-                "DOCTOR",
-                "RECEPTIONIST",
-                "PATIENT"
-            );
+                    "ADMIN",
+                    "DOCTOR",
+                    "RECEPTIONIST",
+                    "PATIENT",
+                    "PHARMACIST");
 
             for (String roleName : roles) {
                 roleRepository.findByName(roleName)

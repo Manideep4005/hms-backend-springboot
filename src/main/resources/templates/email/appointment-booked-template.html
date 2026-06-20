@@ -1,5 +1,5 @@
-
 <!DOCTYPE html>
+
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
@@ -11,212 +11,233 @@
 <body style="
     margin:0;
     padding:0;
-    background:#f4f7fa;
-    font-family:Arial, Helvetica, sans-serif;">
+    background:#f5f7fa;
+    font-family:Arial, Helvetica, sans-serif;
+    color:#333333;">
 
-    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f7fa; padding:30px 0;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="padding:40px 0;">
 
         <tr>
             <td align="center">
 
-                <table width="600" cellpadding="0" cellspacing="0" border="0" style="
-                    background:#ffffff;
-                    border-radius:12px;
-                    overflow:hidden;
-                    box-shadow:0 4px 16px rgba(0,0,0,0.08);">
+                <table width="650" cellpadding="0" cellspacing="0" border="0" style="
+                background:#ffffff;
+                border:1px solid #e5e7eb;">
 
-                    <!-- HEADER -->
+                    <!-- Header -->
                     <tr>
-                        <td align="center" style="
-                            background:#0d6efd;
-                            padding:30px;">
+                        <td style="
+                        padding:30px 40px;
+                        border-bottom:1px solid #e5e7eb;">
 
-                            <h1 style="
-                                color:#ffffff;
-                                margin:0;
-                                font-size:28px;">
-                                HMS
-                            </h1>
+                            <table width="100%">
+                                <tr>
+                                    <td align="left">
+                                        <h1 style="
+                                        margin:0;
+                                        font-size:24px;
+                                        font-weight:600;
+                                        color:#1f2937;">
+                                            HMS
+                                        </h1>
 
-                            <p style="
-                                color:#dbe8ff;
-                                margin-top:8px;
-                                font-size:14px;">
-                                Hospital Management System
-                            </p>
+                                        <p style="
+                                        margin:6px 0 0 0;
+                                        font-size:13px;
+                                        color:#6b7280;">
+                                            Hospital Management System
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
 
                         </td>
                     </tr>
 
-                    <!-- SUCCESS ICON -->
+                    <!-- Content -->
                     <tr>
-                        <td align="center" style="padding-top:25px;">
-                            <div style="font-size:55px;">
-                                ✅
-                            </div>
-                        </td>
-                    </tr>
+                        <td style="padding:40px;">
 
-                    <!-- TITLE -->
-                    <tr>
-                        <td align="center" style="padding:10px 30px 0 30px;">
                             <h2 style="
-                                color:#212529;
-                                margin:0;">
-                                Appointment Confirmed
+                            margin:0 0 25px 0;
+                            font-size:22px;
+                            font-weight:600;
+                            color:#111827;">
+                                Appointment Confirmation
                             </h2>
-                        </td>
-                    </tr>
-
-                    <!-- CONTENT -->
-                    <tr>
-                        <td style="padding:25px 40px;">
 
                             <p style="
-                                font-size:15px;
-                                color:#444;">
+                            margin:0 0 20px 0;
+                            font-size:15px;
+                            line-height:1.7;">
+
                                 Dear
                                 <strong th:text="${patientName}">
-                                    Patient
+                                    Patient Name
                                 </strong>,
                             </p>
 
                             <p style="
-                                font-size:15px;
-                                line-height:1.7;
-                                color:#555;">
-                                Your appointment has been successfully booked.
-                                Below are your appointment details.
+                            margin:0 0 25px 0;
+                            font-size:15px;
+                            line-height:1.8;
+                            color:#4b5563;">
+
+                                We are pleased to confirm your appointment.
+                                Please review the details below for your reference.
+
                             </p>
 
-                            <!-- APPOINTMENT CARD -->
+                            <!-- Appointment Details -->
                             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="
-                                margin-top:20px;
-                                background:#f8fbff;
-                                border:1px solid #d9e8ff;
-                                border-radius:10px;">
+                            border:1px solid #d1d5db;
+                            border-collapse:collapse;
+                            margin-bottom:30px;">
 
                                 <tr>
-                                    <td style="padding:20px;">
+                                    <td width="35%" style="
+                                    padding:14px;
+                                    background:#f9fafb;
+                                    border-bottom:1px solid #e5e7eb;
+                                    font-weight:600;">
+                                        Appointment ID
+                                    </td>
 
-                                        <p style="margin:8px 0;">
-                                            <strong>Appointment ID:</strong>
-                                            <span th:text="${appointmentId}">
-                                                0
-                                            </span>
-                                        </p>
+                                    <td style="
+                                    padding:14px;
+                                    border-bottom:1px solid #e5e7eb;" th:text="${appointmentId}">
+                                        APT-0001
+                                    </td>
+                                </tr>
 
-                                        <p style="margin:8px 0;">
-                                            <strong>Doctor:</strong>
-                                            Dr.
-                                            <span th:text="${doctorName}">
-                                                Doctor Name
-                                            </span>
-                                        </p>
+                                <tr>
+                                    <td style="
+                                    padding:14px;
+                                    background:#f9fafb;
+                                    border-bottom:1px solid #e5e7eb;
+                                    font-weight:600;">
+                                        Doctor
+                                    </td>
 
-                                        <p style="margin:8px 0;">
-                                            <strong>Date & Time:</strong>
-                                            <span th:text="${date}">
-                                                Date
-                                            </span>
-                                        </p>
+                                    <td style="
+                                    padding:14px;
+                                    border-bottom:1px solid #e5e7eb;" th:text="${doctorName}">
+                                        Dr. John Doe
+                                    </td>
+                                </tr>
 
-                                        <p style="margin:8px 0;">
-                                            <strong>Consultation Fee:</strong>
-                                            ₹<span th:text="${consultationFee}">
-                                                0.00
-                                            </span>
-                                        </p>
+                                <tr>
+                                    <td style="
+                                    padding:14px;
+                                    background:#f9fafb;
+                                    border-bottom:1px solid #e5e7eb;
+                                    font-weight:600;">
+                                        Appointment Date & Time
+                                    </td>
 
+                                    <td style="
+                                    padding:14px;
+                                    border-bottom:1px solid #e5e7eb;" th:text="${date}">
+                                        15 Jul 2026, 10:30 AM
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td style="
+                                    padding:14px;
+                                    background:#f9fafb;
+                                    font-weight:600;">
+                                        Consultation Fee
+                                    </td>
+
+                                    <td style="padding:14px;">
+                                        ₹<span th:text="${consultationFee}">
+                                            500.00
+                                        </span>
                                     </td>
                                 </tr>
 
                             </table>
 
-                            <!-- PAYMENT SECTION -->
-                            <div style="
-                                margin-top:20px;
-                                padding:18px;
-                                background:#eef9f1;
-                                border-left:5px solid #28a745;
-                                border-radius:5px;">
-
-                                <p style="
-                                    margin:0;
-                                    font-size:14px;
-                                    color:#333;">
-
-                                    💳 <strong>Payment Options</strong>
-                                    <br><br>
-
-                                    You may pay your consultation fee
-                                    online before your visit or at the
-                                    hospital reception during check-in.
-
-                                </p>
-                            </div>
-
-                            <!-- INSTRUCTIONS -->
-                            <div style="
-                                margin-top:20px;
-                                padding:18px;
-                                background:#fff8e6;
-                                border-left:5px solid #ffc107;
-                                border-radius:5px;">
-
-                                <p style="
-                                    margin:0;
-                                    font-size:14px;
-                                    color:#333;">
-
-                                    📌 <strong>Important Instructions</strong>
-
-                                    <br><br>
-
-                                    • Arrive 10 minutes before appointment time.
-                                    <br>
-                                    • Carry a valid ID proof.
-                                    <br>
-                                    • Bring previous medical reports if available.
-
-                                </p>
-                            </div>
+                            <!-- Payment Information -->
+                            <h3 style="
+                            margin:0 0 12px 0;
+                            font-size:16px;
+                            color:#111827;">
+                                Payment Information
+                            </h3>
 
                             <p style="
-                                margin-top:25px;
-                                color:#555;
-                                line-height:1.7;">
+                            margin:0 0 25px 0;
+                            font-size:14px;
+                            line-height:1.8;
+                            color:#4b5563;">
 
-                                Thank you for choosing HMS.
-                                We wish you good health and look forward
-                                to serving you.
+                                The consultation fee may be paid online before
+                                your visit or at the hospital reception during
+                                check-in.
+
+                            </p>
+
+                            <!-- Instructions -->
+                            <h3 style="
+                            margin:0 0 12px 0;
+                            font-size:16px;
+                            color:#111827;">
+                                Important Information
+                            </h3>
+
+                            <ul style="
+                            margin:0 0 25px 20px;
+                            padding:0;
+                            color:#4b5563;
+                            line-height:1.9;">
+
+                                <li>Please arrive at least 10 minutes before your scheduled appointment.</li>
+
+                                <li>Carry a valid government-issued identification document.</li>
+
+                                <li>Bring any previous medical records or prescriptions relevant to your consultation.
+                                </li>
+
+                            </ul>
+
+                            <p style="
+                            margin:0;
+                            font-size:15px;
+                            line-height:1.8;
+                            color:#4b5563;">
+
+                                Thank you for choosing HMS. We appreciate the
+                                opportunity to serve you and look forward to
+                                assisting with your healthcare needs.
 
                             </p>
 
                             <p style="
-                                margin-top:25px;
-                                color:#444;">
+                            margin-top:35px;
+                            line-height:1.8;">
 
-                                Regards,
+                                Sincerely,
                                 <br>
-                                <strong>HMS Team</strong>
-
+                                <strong>HMS Administration Team</strong>
                             </p>
 
                         </td>
                     </tr>
 
-                    <!-- FOOTER -->
+                    <!-- Footer -->
                     <tr>
-                        <td align="center" style="
-                            background:#f8f9fa;
-                            padding:20px;
-                            font-size:12px;
-                            color:#6c757d;">
+                        <td style="
+                        padding:25px 40px;
+                        border-top:1px solid #e5e7eb;
+                        font-size:12px;
+                        color:#6b7280;
+                        line-height:1.8;">
 
-                            © 2026 HMS Hospital Management System
-                            <br><br>
-                            This is an automated email. Please do not reply.
+                            © 2026 HMS Hospital Management System. All rights reserved.
+                            <br>
+                            This is an automated notification. Please do not reply to this email.
 
                         </td>
                     </tr>

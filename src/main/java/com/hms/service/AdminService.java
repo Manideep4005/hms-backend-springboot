@@ -9,7 +9,7 @@ import com.hms.dto.DoctorRegisterRequest;
 import com.hms.dto.DoctorResponse;
 import com.hms.dto.GuestAppointmentRequest;
 import com.hms.dto.PatientFullDetailsDto;
-import com.hms.dto.RegisterRequest;
+import com.hms.dto.AdminUserCreateRequest;
 import com.hms.dto.UserProfileDto;
 import com.hms.entity.Appointment;
 import com.hms.entity.DoctorAvailability;
@@ -91,18 +91,35 @@ public class AdminService {
     }
 
     public void changePassword(String email, ChangePasswordRequest request) {
-        User admin = getAdminByEmail(email);
-        if (!passwordEncoder.matches(request.getOldPassword(), admin.getPassword())) {
-            throw new RuntimeException("Incorrect current password");
-        }
-        admin.setPassword(passwordEncoder.encode(request.getNewPassword()));
-        userRepository.save(admin);
-        emailService.sendPasswordChangeEmail(admin.getEmail(), admin.getFirstName());
-    }
 
+        User admin = getAdminByEmail(email);
+
+        if (!admin.isPasswordChangeRequired()) {
+
+            if (!passwordEncoder.matches(
+                    request.getOldPassword(),
+                    admin.getPassword())) {
+
+                throw new RuntimeException(
+                        "Incorrect current password");
+            }
+        }
+
+        admin.setPassword(
+                passwordEncoder.encode(
+                        request.getNewPassword()));
+
+        admin.setPasswordChangeRequired(false);
+
+        userRepository.save(admin);
+
+        emailService.sendPasswordChangeEmail(
+                admin.getEmail(),
+                admin.getFirstName());
+    }
     // --- User Management ---
 
-    public User registerAnyUser(RegisterRequest request, String roleName) {
+    public User registerAnyUser(AdminUserCreateRequest request, String roleName) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email already exists");
         }
@@ -112,7 +129,6 @@ public class AdminService {
 
         User user = new User();
         user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setMobileNumber(request.getMobileNumber());
@@ -123,9 +139,16 @@ public class AdminService {
         user.setRoles(Set.of(role));
         user.setEnabled(true);
 
+        String tempPassword = generateRandomPassword();
+
+        user.setPassword(
+                passwordEncoder.encode(tempPassword));
+
+        user.setPasswordChangeRequired(true);
+
         User savedUser = userRepository.save(user);
-        emailService.sendRegistrationEmail(savedUser.getEmail(), savedUser.getFirstName(), savedUser.getLastName(),
-                role.getName());
+        emailService.AdminsendRegistrationEmail(savedUser.getEmail(), savedUser.getFirstName(), savedUser.getLastName(),
+                role.getName(), tempPassword);
         return savedUser;
     }
 
@@ -379,8 +402,6 @@ public class AdminService {
     }
 
     public List<DoctorAvailability> getAvailabilityByDoctor(Long doctorId) {
-        User doctor = userRepository.findById(doctorId)
-                .orElseThrow(() -> new RuntimeException("Doctor not found"));
 
         return availabilityRepository.findAll()
                 .stream()
@@ -449,6 +470,7 @@ public class AdminService {
         details.setSpecialization(request.getSpecialization());
         details.setYearsOfExperience(request.getYearsOfExperience());
         details.setPastExperience(request.getPastExperience());
+        details.setConsultationFee(request.getConsultationFee());
 
         doctorDetailsRepository.save(details);
 

@@ -1,5 +1,6 @@
 package com.hms.controller;
 
+import com.hms.dto.AdminUserCreateRequest;
 import com.hms.dto.ApiResponse;
 import com.hms.dto.AppointmentResponse;
 import com.hms.dto.BillResponseDto;
@@ -9,7 +10,6 @@ import com.hms.dto.DoctorRegisterRequest;
 import com.hms.dto.DoctorResponse;
 import com.hms.dto.GuestAppointmentRequest;
 import com.hms.dto.PatientFullDetailsDto;
-import com.hms.dto.RegisterRequest;
 import com.hms.dto.UserProfileDto;
 import com.hms.entity.DoctorAvailability;
 import com.hms.entity.User;
@@ -58,7 +58,7 @@ public class AdminController {
     // --- User Management ---
 
     @PostMapping("/users/register")
-    public ResponseEntity<ApiResponse> registerUser(@RequestBody RegisterRequest request,
+    public ResponseEntity<ApiResponse> registerUser(@RequestBody AdminUserCreateRequest request,
             @RequestParam("role") String role) {
         adminService.registerAnyUser(request, role);
         return ResponseEntity.ok(new ApiResponse(true, role + " registered successfully"));

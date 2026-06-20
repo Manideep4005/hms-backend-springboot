@@ -30,6 +30,8 @@ public class User {
 
 	@Column(nullable = false)
 	private boolean enabled = true;
+	@Column(name = "password_change_required", nullable = false)
+	private boolean passwordChangeRequired = false;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -107,4 +109,11 @@ public class User {
 		this.roles = roles;
 	}
 
+	public boolean isPasswordChangeRequired() {
+		return passwordChangeRequired;
+	}
+
+	public void setPasswordChangeRequired(boolean passwordChangeRequired) {
+		this.passwordChangeRequired = passwordChangeRequired;
+	}
 }

@@ -62,9 +62,11 @@ public class UserService {
 
 		user.setRoles(Set.of(role));
 		user.setEnabled(true);
+		user.setPasswordChangeRequired(false);
 
 		User savedUser = userRepository.save(user);
-		emailService.sendRegistrationEmail(savedUser.getEmail(), savedUser.getFirstName(), savedUser.getLastName(), role.getName());
+		emailService.sendRegistrationEmail(savedUser.getEmail(), savedUser.getFirstName(), savedUser.getLastName(),
+				role.getName());
 		return savedUser;
 	}
 
@@ -88,6 +90,6 @@ public class UserService {
 				.orElse("UNKNOWN");
 
 		return new AuthResponse(jwtToken, "Login successful", true, roleName,
-				user.getFirstName() + " " + user.getLastName());
+				user.getFirstName() + " " + user.getLastName(), user.isPasswordChangeRequired());
 	}
 }

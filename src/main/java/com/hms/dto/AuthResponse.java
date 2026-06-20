@@ -6,13 +6,16 @@ public class AuthResponse {
     private boolean success;
     private String role; // Just for convenience
     private String username;
+    private boolean forcePasswordChange;
 
-    public AuthResponse(String token, String message, boolean success, String role, String username) {
+    public AuthResponse(String token, String message, boolean success, String role, String username,
+            boolean forcePasswordChange) {
         this.token = token;
         this.message = message;
         this.success = success;
         this.role = role;
         this.username = username;
+        this.forcePasswordChange = forcePasswordChange;
     }
 
     public String getToken() {
@@ -53,5 +56,13 @@ public class AuthResponse {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public boolean isForcePasswordChange() {
+        return forcePasswordChange;
+    }
+
+    public void setForcePasswordChange(boolean forcePasswordChange) {
+        this.forcePasswordChange = forcePasswordChange;
     }
 }

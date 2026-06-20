@@ -1,14 +1,10 @@
 package com.hms.service;
 
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -16,15 +12,6 @@ import org.thymeleaf.context.Context;
 
 @Service
 public class EmailService {
-
-    // private final JavaMailSender javaMailSender;
-    // private final TemplateEngine templateEngine;
-
-    // public EmailService(JavaMailSender javaMailSender, TemplateEngine
-    // templateEngine) {
-    // this.javaMailSender = javaMailSender;
-    // this.templateEngine = templateEngine;
-    // }
 
     private final BrevoEmailService brevoEmailService;
     private final TemplateEngine templateEngine;
@@ -54,6 +41,34 @@ public class EmailService {
                     context);
 
             sendHtmlMessage(to, "Welcome to HMS", process);
+
+        } catch (Exception e) {
+            System.err.println("Failed to send Registration email");
+            e.printStackTrace();
+        }
+    }
+
+    @Async
+    public void AdminsendRegistrationEmail(
+            String to,
+            String firstName,
+            String lastName,
+            String roleName, String tempPassword) {
+
+        try {
+            Context context = new Context();
+
+            context.setVariable("firstName", firstName);
+            context.setVariable("lastName", lastName);
+            context.setVariable("roleName", roleName);
+            context.setVariable("email", to);
+            context.setVariable("tempPassword", tempPassword);
+
+            String process = templateEngine.process(
+                    "email/admin-register-user-template",
+                    context);
+
+            sendHtmlMessage(to, "Your Account has been created", process);
 
         } catch (Exception e) {
             System.err.println("Failed to send Registration email");
@@ -126,22 +141,6 @@ public class EmailService {
     }
 
     private void sendHtmlMessage(String to, String subject, String htmlBody) throws MessagingException {
-
-        // MimeMessage message = javaMailSender.createMimeMessage();
-
-        // MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-        // helper.setFrom("hms2systems@gmail.com");
-
-        // helper.setTo(to);
-
-        // helper.setSubject(subject);
-
-        // helper.setText(htmlBody, true);
-
-        // javaMailSender.send(message);
-
-        // System.out.println("Email sent successfully to: " + to);
 
         brevoEmailService.sendEmail(to, subject, htmlBody);
     }

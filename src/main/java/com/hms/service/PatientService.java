@@ -73,14 +73,35 @@ public class PatientService {
         userRepository.save(user);
     }
 
-    public void changePassword(String email, ChangePasswordRequest request) {
+    public void changePassword(
+            String email,
+            ChangePasswordRequest request) {
+
         User user = getUserByEmail(email);
-        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
-            throw new RuntimeException("Incorrect old password");
+
+        // Normal password change
+        if (!user.isPasswordChangeRequired()) {
+
+            if (!passwordEncoder.matches(
+                    request.getOldPassword(),
+                    user.getPassword())) {
+
+                throw new RuntimeException(
+                        "Incorrect old password");
+            }
         }
-        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+
+        user.setPassword(
+                passwordEncoder.encode(
+                        request.getNewPassword()));
+
+        user.setPasswordChangeRequired(false);
+
         userRepository.save(user);
-        emailService.sendPasswordChangeEmail(user.getEmail(), user.getFirstName());
+
+        emailService.sendPasswordChangeEmail(
+                user.getEmail(),
+                user.getFirstName());
     }
 
     public List<User> getAvailableDoctors() {

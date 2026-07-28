@@ -48,6 +48,8 @@ public class SecurityConfig {
 						.authenticationEntryPoint(restAuthenticationEntryPoint))
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth
+						.requestMatchers("/api/health/**").permitAll()
+						.requestMatchers("/actuator/**").permitAll()
 						.requestMatchers("/api/auth/**").permitAll()
 						.requestMatchers("/api/admin/**").hasRole("ADMIN")
 						.requestMatchers("/api/doctor/**").hasRole("DOCTOR")

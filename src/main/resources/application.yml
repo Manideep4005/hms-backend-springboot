@@ -41,5 +41,15 @@ brevo:
   api-key: ${BREVO_API_KEY}
   sender-email: systems2hms@gmail.com
 
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
 server:
   port: ${PORT:8081}

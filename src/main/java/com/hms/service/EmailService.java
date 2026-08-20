@@ -3,8 +3,11 @@ package com.hms.service;
 import jakarta.mail.MessagingException;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
@@ -21,6 +24,9 @@ public class EmailService {
         this.templateEngine = templateEngine;
     }
 
+    @Value("${app.frontend.url}")
+    private String frontendUrl;
+
     @Async
     public void sendRegistrationEmail(
             String to,
@@ -35,6 +41,9 @@ public class EmailService {
             context.setVariable("lastName", lastName);
             context.setVariable("roleName", roleName);
             context.setVariable("email", to);
+
+            String loginUrl = frontendUrl;
+            context.setVariable("loginUrl", loginUrl);
 
             String process = templateEngine.process(
                     "email/registration-template",
@@ -63,6 +72,8 @@ public class EmailService {
             context.setVariable("roleName", roleName);
             context.setVariable("email", to);
             context.setVariable("tempPassword", tempPassword);
+            String loginUrl = frontendUrl;
+            context.setVariable("loginUrl", loginUrl);
 
             String process = templateEngine.process(
                     "email/admin-register-user-template",
@@ -80,12 +91,27 @@ public class EmailService {
     public void sendPasswordChangeEmail(String to, String firstName) {
         try {
             Context context = new Context();
+
             context.setVariable("firstName", firstName);
 
-            String process = templateEngine.process("email/password-change-template", context);
-            sendHtmlMessage(to, "Password Changed Successfully", process);
+            String changedAt = ZonedDateTime.now(ZoneId.of("Asia/Kolkata"))
+                    .format(
+                            DateTimeFormatter.ofPattern(
+                                    "dd MMM yyyy, hh:mm a 'IST'"));
+
+            context.setVariable("changedAt", changedAt);
+
+            String process = templateEngine.process(
+                    "email/password-change-template",
+                    context);
+
+            sendHtmlMessage(
+                    to,
+                    "Password Changed Successfully",
+                    process);
+
         } catch (Exception e) {
-            System.err.println("Failed to send Password Change email: ");
+            System.err.println("Failed to send Password Change email:");
             e.printStackTrace();
         }
     }
@@ -152,6 +178,8 @@ public class EmailService {
             context.setVariable("firstName", firstName);
             context.setVariable("email", to);
             context.setVariable("tempPassword", tempPassword);
+            String loginUrl = frontendUrl;
+            context.setVariable("loginUrl", loginUrl);
 
             String process = templateEngine.process("email/doctor-registration-template", context);
             sendHtmlMessage(to, "Your HMS Doctor Account Credentials", process);
@@ -182,6 +210,10 @@ public class EmailService {
         try {
             Context context = new Context();
             context.setVariable("firstName", firstName);
+            String changedAt = ZonedDateTime.now(ZoneId.of("Asia/Kolkata"))
+                    .format(DateTimeFormatter.ofPattern("dd MMM yyyy, hh:mm a 'IST'"));
+
+            context.setVariable("changedAt", changedAt);
 
             String process = templateEngine.process("email/password-reset-success-template", context);
             sendHtmlMessage(to, "Your HMS Password Has Been Reset", process);

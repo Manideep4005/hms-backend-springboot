@@ -530,19 +530,18 @@ public class AdminService {
         return mapToDoctorResponse(doctor, details);
     }
 
+    @Transactional
     public void deleteDoctor(Long id) {
 
         DoctorDetails details = doctorDetailsRepository
                 .findByDoctor_Id(id)
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
 
-        if (details == null) {
-            throw new RuntimeException("Doctor not found");
-        }
-
         User doctor = details.getDoctor();
 
         doctorDetailsRepository.delete(details);
+        doctorDetailsRepository.flush();
+
         userRepository.delete(doctor);
     }
 

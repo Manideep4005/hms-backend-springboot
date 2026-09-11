@@ -1,6 +1,7 @@
 package com.hms.service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,24 +34,33 @@ public class ForgotPasswordService {
 
     public OperationResult sendOtp(String email) {
 
-        User user = userRepo.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        // 1. Try to find the user without throwing an error
+        Optional<User> userOptional = userRepo.findByEmail(email);
 
-        String otp = generateOtp();
+        // 2. If the user exists, do the normal OTP and email work
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            String otp = generateOtp();
 
-        PasswordResetOtp entity = new PasswordResetOtp();
-        entity.setEmail(email);
-        entity.setOtp(otp);
-        entity.setExpiryTime(LocalDateTime.now().plusMinutes(5));
+            PasswordResetOtp entity = new PasswordResetOtp();
+            entity.setEmail(email);
+            entity.setOtp(otp);
+            entity.setExpiryTime(LocalDateTime.now().plusMinutes(5));
 
-        otpRepo.save(entity);
+            otpRepo.save(entity);
 
-        emailService.sendForgotPasswordOtpEmail(
-                user.getEmail(),
-                user.getFirstName() + " " + user.getLastName(),
-                otp);
+            emailService.sendForgotPasswordOtpEmail(
+                    user.getEmail(),
+                    user.getFirstName() + " " + user.getLastName(),
+                    otp);
+        } else {
+            // 3. Optional: Log the event internally for debugging, but do not tell the user
+            // logger.info("Password reset requested for non-existent email: {}", email);
+        }
 
-        return new OperationResult(true, "OTP sent successfully");
+        // 4. ALWAYS return the exact same generic success message
+        return new OperationResult(true,
+                "If a matching account exists, a password reset OTP has been sent to your email.");
     }
 
     public OperationResult verifyOtp(String email, String otp) {

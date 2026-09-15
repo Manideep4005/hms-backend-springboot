@@ -6,13 +6,15 @@ import com.hms.dto.AppointmentResponse;
 import com.hms.dto.BillResponseDto;
 import com.hms.dto.ChangePasswordRequest;
 import com.hms.dto.DoctorAvailabilityRequest;
+import com.hms.dto.DoctorAvailabilityResponse;
 import com.hms.dto.DoctorRegisterRequest;
 import com.hms.dto.DoctorResponse;
 import com.hms.dto.GuestAppointmentRequest;
 import com.hms.dto.PatientFullDetailsDto;
 import com.hms.dto.UserProfileDto;
-import com.hms.entity.DoctorAvailability;
-import com.hms.entity.User;
+import com.hms.dto.UserResponse;
+// import com.hms.entity.DoctorAvailability;
+// import com.hms.entity.User;
 import com.hms.service.AdminService;
 import com.hms.service.BillingService;
 
@@ -65,24 +67,31 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
         return ResponseEntity.ok(adminService.getAllUsers());
     }
 
     @GetMapping("/patients")
-    public ResponseEntity<List<User>> getPatients() {
+    public ResponseEntity<List<UserResponse>> getPatients() {
         return ResponseEntity.ok(adminService.getPatients());
     }
 
     @GetMapping("/patients/search")
-    public ResponseEntity<User> searchPatient(@RequestParam(value = "id", required = false) Long id,
+    public ResponseEntity<UserResponse> searchPatient(
+            @RequestParam(value = "id", required = false) Long id,
             @RequestParam(value = "mobile", required = false) String mobile) {
+
         if (id != null) {
-            return ResponseEntity.ok(adminService.searchPatientById(id));
+            return ResponseEntity.ok(
+                    adminService.searchPatientById(id));
+
         } else if (mobile != null) {
-            return ResponseEntity.ok(adminService.searchPatientByMobile(mobile));
+            return ResponseEntity.ok(
+                    adminService.searchPatientByMobile(mobile));
         }
-        throw new RuntimeException("Must provide id or mobile parameter to search");
+
+        throw new RuntimeException(
+                "Must provide id or mobile parameter to search");
     }
 
     @DeleteMapping("/users/{id}")
@@ -195,7 +204,7 @@ public class AdminController {
 
     // GET BY DOCTOR
     @GetMapping("/doctor-availability/{doctorId}")
-    public ResponseEntity<List<DoctorAvailability>> getByDoctor(
+    public ResponseEntity<List<DoctorAvailabilityResponse>> getByDoctor(
             @PathVariable Long doctorId) {
         return ResponseEntity.ok(adminService.getAvailabilityByDoctor(doctorId));
     }

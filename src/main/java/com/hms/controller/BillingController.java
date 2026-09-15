@@ -1,6 +1,7 @@
 package com.hms.controller;
 
-import com.hms.entity.Bill;
+import com.hms.dto.BillResponseDto;
+// import com.hms.entity.Bill;
 import com.hms.service.BillingService;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,8 @@ public class BillingController {
     }
 
     @GetMapping("/{appointmentId}")
-    public Bill getBill(@PathVariable Long appointmentId) {
+    public BillResponseDto getBill(@PathVariable Long appointmentId) {
+
         return billingService.getBillByAppointment(appointmentId);
     }
 

@@ -1,30 +1,40 @@
-package com.hms.entity;
+package com.hms.dto;
 
 import java.time.LocalTime;
 
-import jakarta.persistence.*;
+public class DoctorAvailabilityResponse {
 
-@Entity
-@Table(name = "doctor_availability")
-public class DoctorAvailability {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "doctor_id", nullable = false)
-    private User doctor;
-
+    private Long doctorId;
     private String dayOfWeek;
-
     private LocalTime startTime;
     private LocalTime endTime;
-
     private LocalTime breakStart;
     private LocalTime breakEnd;
-
     private Integer slotDuration;
+
+    public DoctorAvailabilityResponse() {
+    }
+
+    public DoctorAvailabilityResponse(
+            Long id,
+            Long doctorId,
+            String dayOfWeek,
+            LocalTime startTime,
+            LocalTime endTime,
+            LocalTime breakStart,
+            LocalTime breakEnd,
+            Integer slotDuration) {
+
+        this.id = id;
+        this.doctorId = doctorId;
+        this.dayOfWeek = dayOfWeek;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.breakStart = breakStart;
+        this.breakEnd = breakEnd;
+        this.slotDuration = slotDuration;
+    }
 
     public Long getId() {
         return id;
@@ -34,12 +44,12 @@ public class DoctorAvailability {
         this.id = id;
     }
 
-    public User getDoctor() {
-        return doctor;
+    public Long getDoctorId() {
+        return doctorId;
     }
 
-    public void setDoctor(User doctor) {
-        this.doctor = doctor;
+    public void setDoctorId(Long doctorId) {
+        this.doctorId = doctorId;
     }
 
     public String getDayOfWeek() {
@@ -66,14 +76,6 @@ public class DoctorAvailability {
         this.endTime = endTime;
     }
 
-    public Integer getSlotDuration() {
-        return slotDuration;
-    }
-
-    public void setSlotDuration(Integer slotDuration) {
-        this.slotDuration = slotDuration;
-    }
-
     public LocalTime getBreakStart() {
         return breakStart;
     }
@@ -90,4 +92,11 @@ public class DoctorAvailability {
         this.breakEnd = breakEnd;
     }
 
+    public Integer getSlotDuration() {
+        return slotDuration;
+    }
+
+    public void setSlotDuration(Integer slotDuration) {
+        this.slotDuration = slotDuration;
+    }
 }

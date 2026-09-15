@@ -10,10 +10,14 @@ import com.hms.repository.UserRepository;
 import com.hms.security.JwtUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.Authentication;
+// import org.springframework.security.core.GrantedAuthority;
+// import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Set;
 
@@ -25,7 +29,7 @@ public class UserService {
 	private final PasswordEncoder passwordEncoder;
 	private final AuthenticationManager authenticationManager;
 	private final JwtUtil jwtUtil;
-	private final UserDetailsService userDetailsService;
+	// private final UserDetailsService userDetailsService;
 	private final EmailService emailService;
 
 	public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder,
@@ -36,7 +40,6 @@ public class UserService {
 		this.passwordEncoder = passwordEncoder;
 		this.authenticationManager = authenticationManager;
 		this.jwtUtil = jwtUtil;
-		this.userDetailsService = userDetailsService;
 		this.emailService = emailService;
 	}
 
@@ -71,25 +74,33 @@ public class UserService {
 	}
 
 	public AuthResponse login(LoginRequest request) {
-		authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+
+		Authentication authentication = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(
+						request.getEmail(),
+						request.getPassword()));
+
+		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+		String jwtToken = jwtUtil.generateToken(userDetails);
+
+		String roleName = userDetails.getAuthorities()
+				.stream()
+				.map(GrantedAuthority::getAuthority)
+				.filter(authority -> authority.startsWith("ROLE_"))
+				.map(authority -> authority.substring(5))
+				.findFirst()
+				.orElse("UNKNOWN");
 
 		User user = userRepository.findByEmail(request.getEmail())
 				.orElseThrow(() -> new RuntimeException("User not found"));
 
-		if (!user.isEnabled()) {
-			throw new RuntimeException("User account is disabled");
-		}
-
-		UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
-		String jwtToken = jwtUtil.generateToken(userDetails);
-
-		String roleName = user.getRoles().stream()
-				.map(Role::getName)
-				.findFirst()
-				.orElse("UNKNOWN");
-
-		return new AuthResponse(jwtToken, "Login successful", true, roleName,
-				user.getFirstName() + " " + user.getLastName(), user.isPasswordChangeRequired());
+		return new AuthResponse(
+				jwtToken,
+				"Login successful",
+				true,
+				roleName,
+				user.getFirstName() + " " + user.getLastName(),
+				user.isPasswordChangeRequired());
 	}
 }

@@ -1,104 +1,213 @@
 package com.hms.repository;
 
+import com.hms.dto.AppointmentResponse;
 import com.hms.entity.Appointment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
-        // ✅ Patient
-        List<Appointment> findByPatientId(Long patientId);
+    // =========================
+    // PATIENT
+    // =========================
 
-        List<Appointment> findByPatientIdOrderByAppointmentDateDesc(Long patientId);
+    List<Appointment> findByPatientId(Long patientId);
 
-        List<Appointment> findByPatientIdAndStatus(Long patientId, String status);
+    List<Appointment> findByPatientIdOrderByAppointmentDateDesc(Long patientId);
 
-        // ✅ Doctor
-        List<Appointment> findByDoctorId(Long doctorId);
+    List<Appointment> findByPatientIdAndStatus(Long patientId, String status);
 
-        List<Appointment> findByDoctorIdAndStatus(Long doctorId, String status);
+    // =========================
+    // DOCTOR
+    // =========================
 
-        // ✅ FIX: fetch only same-day bookings (IMPORTANT)
-        List<Appointment> findByDoctorIdAndAppointmentDateBetween(
-                        Long doctorId,
-                        LocalDateTime start,
-                        LocalDateTime end);
+    List<Appointment> findByDoctorId(Long doctorId);
 
-        // ✅ FIX: prevent double booking (CRITICAL)
-        boolean existsByDoctorIdAndAppointmentDate(Long doctorId, LocalDateTime appointmentDate);
+    List<Appointment> findByDoctorIdAndStatus(Long doctorId, String status);
 
-        @Query("""
-                            SELECT a FROM Appointment a
-                            JOIN FETCH a.doctor d
-                            JOIN FETCH a.patient p
-                            WHERE p.id = :patientId
-                            ORDER BY a.appointmentDate DESC
-                        """)
-        List<Appointment> findFullByPatientId(Long patientId);
+    List<Appointment> findByDoctorIdAndAppointmentDateBetween(
+            Long doctorId,
+            LocalDateTime start,
+            LocalDateTime end);
 
-        // Optional (admin usage)
-        List<Appointment> findByAppointmentDateBetween(LocalDateTime start, LocalDateTime end);
+    boolean existsByDoctorIdAndAppointmentDate(
+            Long doctorId,
+            LocalDateTime appointmentDate);
 
-        List<Appointment> findByDoctorIdAndAppointmentDateBetweenAndStatus(
-                        Long doctorId,
-                        LocalDateTime start,
-                        LocalDateTime end,
-                        String status);
+    // =========================
+    // PATIENT FULL DETAILS
+    // =========================
 
-        @Query("""
-                            SELECT a FROM Appointment a
-                            WHERE a.doctor.id = :doctorId
-                            AND a.status = :status
-                            AND a.appointmentDate >= :start
-                            AND a.appointmentDate < :end
-                        """)
-        List<Appointment> findBookedSlots(
-                        Long doctorId,
-                        String status,
-                        LocalDateTime start,
-                        LocalDateTime end);
+    @Query("""
+                SELECT a
+                FROM Appointment a
+                JOIN FETCH a.doctor
+                JOIN FETCH a.patient
+                WHERE a.patient.id = :patientId
+                ORDER BY a.appointmentDate DESC
+            """)
+    List<Appointment> findFullByPatientId(
+            @Param("patientId") Long patientId);
 
-        @Query("""
-                            SELECT a FROM Appointment a
-                            LEFT JOIN FETCH a.patient
-                            JOIN FETCH a.doctor
-                            WHERE a.doctor.id = :doctorId
-                            ORDER BY a.appointmentDate DESC
-                        """)
-        List<Appointment> findDoctorAppointmentsWithDetails(Long doctorId);
+    @Query("""
+                SELECT new com.hms.dto.AppointmentResponse(
+                    a.id,
+                    a.appointmentDate,
+                    a.status,
+                    CONCAT(d.firstName, ' ', d.lastName),
+                    COALESCE(dd.specialization, 'N/A'),
+                    CASE
+                        WHEN a.isGuest = true
+                        THEN CONCAT(a.guestFirstName, ' ', a.guestLastName)
+                        ELSE CONCAT(p.firstName, ' ', p.lastName)
+                    END,
+                    CASE
+                        WHEN a.isGuest = true
+                        THEN a.guestMobile
+                        ELSE p.mobileNumber
+                    END,
+                    d.id
+                )
+                FROM Appointment a
+                JOIN a.doctor d
+                LEFT JOIN a.patient p
+                LEFT JOIN DoctorDetails dd ON dd.doctor.id = d.id
+                ORDER BY a.appointmentDate DESC
+            """)
+    List<AppointmentResponse> findAllForAdmin();
 
-        // stats
-        long count();
+    @Query("""
+                SELECT new com.hms.dto.AppointmentResponse(
+                    a.id,
+                    a.appointmentDate,
+                    a.status,
+                    CONCAT(d.firstName, ' ', d.lastName),
+                    COALESCE(dd.specialization, 'N/A'),
+                    CASE
+                        WHEN a.isGuest = true
+                        THEN CONCAT(a.guestFirstName, ' ', a.guestLastName)
+                        ELSE CONCAT(p.firstName, ' ', p.lastName)
+                    END,
+                    CASE
+                        WHEN a.isGuest = true
+                        THEN a.guestMobile
+                        ELSE p.mobileNumber
+                    END,
+                    d.id
+                )
+                FROM Appointment a
+                JOIN a.doctor d
+                LEFT JOIN a.patient p
+                LEFT JOIN DoctorDetails dd ON dd.doctor.id = d.id
+                WHERE a.appointmentDate >= :start
+                  AND a.appointmentDate < :end
+                ORDER BY a.appointmentDate ASC
+            """)
+    List<AppointmentResponse> findForAdminByDateRange(
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end);
 
-        long countByStatus(String status);
+    // =========================
+    // EXISTING ADMIN / OTHER
+    // =========================
 
-        long countByAppointmentDateBetween(LocalDateTime start, LocalDateTime end);
+    List<Appointment> findByAppointmentDateBetween(
+            LocalDateTime start,
+            LocalDateTime end);
 
-        long countByAppointmentDateBetweenAndStatus(
-                        LocalDateTime start,
-                        LocalDateTime end,
-                        String status);
+    List<Appointment> findByDoctorIdAndAppointmentDateBetweenAndStatus(
+            Long doctorId,
+            LocalDateTime start,
+            LocalDateTime end,
+            String status);
 
-        long countByDoctorId(Long doctorId);
+    @Query("""
+                SELECT a
+                FROM Appointment a
+                WHERE a.doctor.id = :doctorId
+                  AND a.status = :status
+                  AND a.appointmentDate >= :start
+                  AND a.appointmentDate < :end
+            """)
+    List<Appointment> findBookedSlots(
+            @Param("doctorId") Long doctorId,
+            @Param("status") String status,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end);
 
-        long countByDoctorIdAndStatus(Long doctorId, String status);
+    @Query("""
+                SELECT a
+                FROM Appointment a
+                LEFT JOIN FETCH a.patient
+                JOIN FETCH a.doctor
+                WHERE a.doctor.id = :doctorId
+                ORDER BY a.appointmentDate DESC
+            """)
+    List<Appointment> findDoctorAppointmentsWithDetails(
+            @Param("doctorId") Long doctorId);
 
-        long countByDoctorIdAndAppointmentDateBetween(
-                        Long doctorId,
-                        LocalDateTime start,
-                        LocalDateTime end);
+    // =========================
+    // STATS
+    // =========================
 
-        long countByDoctorIdAndStatusAndAppointmentDateBetween(
-                        Long doctorId,
-                        String status,
-                        LocalDateTime start,
-                        LocalDateTime end);
+    long count();
 
-        boolean existsByDoctorIdAndAppointmentDateAndStatusIn(
-                        Long doctorId,
-                        LocalDateTime appointmentDate,
-                        List<String> statuses);
+    long countByStatus(String status);
+
+    long countByAppointmentDateBetween(
+            LocalDateTime start,
+            LocalDateTime end);
+
+    long countByAppointmentDateBetweenAndStatus(
+            LocalDateTime start,
+            LocalDateTime end,
+            String status);
+
+    long countByDoctorId(Long doctorId);
+
+    long countByDoctorIdAndStatus(
+            Long doctorId,
+            String status);
+
+    long countByDoctorIdAndAppointmentDateBetween(
+            Long doctorId,
+            LocalDateTime start,
+            LocalDateTime end);
+
+    long countByDoctorIdAndStatusAndAppointmentDateBetween(
+            Long doctorId,
+            String status,
+            LocalDateTime start,
+            LocalDateTime end);
+
+    boolean existsByDoctorIdAndAppointmentDateAndStatusIn(
+            Long doctorId,
+            LocalDateTime appointmentDate,
+            List<String> statuses);
+
+    @Query("""
+                SELECT new com.hms.dto.AppointmentResponse(
+                    a.id,
+                    a.appointmentDate,
+                    a.status,
+                    CONCAT(d.firstName, ' ', d.lastName),
+                    COALESCE(dd.specialization, 'N/A'),
+                    CONCAT(p.firstName, ' ', p.lastName),
+                    p.mobileNumber,
+                    d.id
+                )
+                FROM Appointment a
+                JOIN a.doctor d
+                LEFT JOIN a.patient p
+                LEFT JOIN DoctorDetails dd ON dd.doctor.id = d.id
+                WHERE p.id = :patientId
+                ORDER BY a.appointmentDate DESC
+            """)
+    List<AppointmentResponse> findPatientAppointmentResponses(
+            @Param("patientId") Long patientId);
+
 }

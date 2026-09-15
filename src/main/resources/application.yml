@@ -7,24 +7,43 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
+    hikari:
+      pool-name: HMSHikariPool
+      maximum-pool-size: 3
+      minimum-idle: 1
+      connection-timeout: 10000
+      validation-timeout: 5000
+      idle-timeout: 300000
+      max-lifetime: 1740000
+      keepalive-time: 300000
+      leak-detection-threshold: 2000
+      auto-commit: true
+
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+
+    show-sql: false
     open-in-view: false
+
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
+        # dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
 
   mail:
     host: smtp.gmail.com
     port: 465
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
+
     properties:
       mail:
-        debug: true
+        debug: false
         smtp:
           auth: true
           connectiontimeout: 10000
@@ -39,21 +58,25 @@ app:
 
 logging:
   level:
-    org.springframework: DEBUG
+    root: INFO
+    org.springframework: INFO
+    org.hibernate.SQL: WARN
+    org.hibernate.orm.jdbc.bind: WARN
+    com.zaxxer.hikari: INFO
 
 brevo:
   api-key: ${BREVO_API_KEY}
   sender-email: systems2hms@gmail.com
-
 
 management:
   endpoints:
     web:
       exposure:
         include: health,info
+
   endpoint:
     health:
-      show-details: always
+      show-details: never
 
 server:
   port: ${PORT:8081}

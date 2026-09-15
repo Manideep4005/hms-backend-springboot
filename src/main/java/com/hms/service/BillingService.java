@@ -4,6 +4,8 @@ import com.hms.dto.BillItemDto;
 import com.hms.dto.BillResponseDto;
 import com.hms.entity.*;
 import com.hms.repository.AppointmentRepository;
+import com.hms.repository.BillItemProjection;
+import com.hms.repository.BillProjection;
 import com.hms.repository.BillRepository;
 import com.hms.repository.DoctorDetailsRepository;
 import com.hms.repository.UserRepository;
@@ -11,16 +13,13 @@ import com.hms.repository.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class BillingService {
 
         private final BillRepository billRepository;
         private final DoctorDetailsRepository doctorDetailsRepository;
-        private final AppointmentRepository appointmentRepository;
-        private final UserRepository userRepository;
 
         public BillingService(BillRepository billRepository,
                         DoctorDetailsRepository doctorDetailsRepository,
@@ -28,8 +27,6 @@ public class BillingService {
                         UserRepository userRepository) {
                 this.billRepository = billRepository;
                 this.doctorDetailsRepository = doctorDetailsRepository;
-                this.appointmentRepository = appointmentRepository;
-                this.userRepository = userRepository;
         }
 
         /* ================= CREATE BILL ================= */
@@ -76,9 +73,37 @@ public class BillingService {
 
         /* ================= GET BILL ================= */
 
-        public Bill getBillByAppointment(Long appointmentId) {
-                return billRepository.findByAppointmentId(appointmentId)
+        @Transactional(readOnly = true)
+        public BillResponseDto getBillByAppointment(Long appointmentId) {
+
+                BillProjection bill = billRepository.findBillProjectionByAppointmentId(appointmentId)
                                 .orElseThrow(() -> new RuntimeException("Bill not found"));
+
+                List<BillItemProjection> itemProjections = billRepository.findItemsByBillIds(
+                                List.of(bill.getId()));
+
+                List<BillItemDto> items = itemProjections.stream()
+                                .map(item -> new BillItemDto(
+                                                item.getItemName(),
+                                                item.getQuantity(),
+                                                item.getPrice(),
+                                                item.getTotal()))
+                                .toList();
+
+                return new BillResponseDto(
+                                bill.getId(),
+                                bill.getAmount(),
+                                bill.getDiscount(),
+                                bill.getTax(),
+                                bill.getTotalAmount(),
+                                bill.getStatus(),
+                                bill.getBillDate(),
+                                items,
+                                bill.getAppointmentId(),
+                                bill.getDoctorName(),
+                                bill.getSpecialization(),
+                                bill.getAppointmentDate(),
+                                bill.getPatientName());
         }
 
         /* ================= MARK PAID ================= */
@@ -104,149 +129,113 @@ public class BillingService {
         @Transactional(readOnly = true)
         public List<BillResponseDto> getPatientBills(Long patientId) {
 
-                List<Bill> bills = billRepository.findByPatientIdWithItems(patientId);
+                List<BillProjection> bills = billRepository.findPatientBillProjections(patientId);
 
-                return bills.stream().map(bill -> {
+                if (bills.isEmpty()) {
+                        return List.of();
+                }
 
-                        Appointment appointment = appointmentRepository
-                                        .findById(bill.getAppointmentId())
-                                        .orElse(null);
+                List<Long> billIds = bills.stream()
+                                .map(BillProjection::getId)
+                                .toList();
 
-                        User doctor = userRepository
-                                        .findById(bill.getDoctorId())
-                                        .orElse(null);
+                List<BillItemProjection> itemProjections = billRepository.findItemsByBillIds(billIds);
 
-                        DoctorDetails doctorDetails = doctorDetailsRepository
-                                        .findByDoctor_Id(bill.getDoctorId())
-                                        .orElse(null);
+                java.util.Map<Long, List<BillItemDto>> itemsByBill = new java.util.HashMap<>();
 
-                        String patientName = null;
+                for (BillItemProjection item : itemProjections) {
 
-                        if (appointment != null) {
+                        itemsByBill
+                                        .computeIfAbsent(
+                                                        item.getBillId(),
+                                                        id -> new ArrayList<>())
+                                        .add(
+                                                        new BillItemDto(
+                                                                        item.getItemName(),
+                                                                        item.getQuantity(),
+                                                                        item.getPrice(),
+                                                                        item.getTotal()));
+                }
 
-                                if (Boolean.TRUE.equals(appointment.getIsGuest())) {
+                return bills.stream()
+                                .map(bill -> {
 
-                                        String firstName = appointment.getGuestFirstName() != null
-                                                        ? appointment.getGuestFirstName()
-                                                        : "";
+                                        List<BillItemDto> items = itemsByBill.getOrDefault(
+                                                        bill.getId(),
+                                                        List.of());
 
-                                        String lastName = appointment.getGuestLastName() != null
-                                                        ? appointment.getGuestLastName()
-                                                        : "";
-
-                                        patientName = (firstName + " " + lastName).trim();
-
-                                } else if (appointment.getPatient() != null) {
-
-                                        patientName = appointment.getPatient().getFirstName() + " "
-                                                        + appointment.getPatient().getLastName();
-                                }
-                        }
-
-                        List<BillItemDto> items = bill.getItems().stream()
-                                        .map(i -> new BillItemDto(
-                                                        i.getItemName(),
-                                                        i.getQuantity(),
-                                                        i.getPrice(),
-                                                        i.getTotal()))
-                                        .toList();
-
-                        return new BillResponseDto(
-                                        bill.getId(),
-                                        bill.getAmount(),
-                                        bill.getDiscount(),
-                                        bill.getTax(),
-                                        bill.getTotalAmount(),
-                                        bill.getStatus().name(),
-                                        bill.getBillDate(),
-                                        items,
-                                        bill.getAppointmentId(),
-                                        doctor != null
-                                                        ? doctor.getFirstName() + " " + doctor.getLastName()
-                                                        : null,
-                                        doctorDetails != null
-                                                        ? doctorDetails.getSpecialization()
-                                                        : null,
-                                        appointment != null
-                                                        ? appointment.getAppointmentDate()
-                                                        : null,
-                                        patientName);
-
-                }).toList();
+                                        return new BillResponseDto(
+                                                        bill.getId(),
+                                                        bill.getAmount(),
+                                                        bill.getDiscount(),
+                                                        bill.getTax(),
+                                                        bill.getTotalAmount(),
+                                                        bill.getStatus(),
+                                                        bill.getBillDate(),
+                                                        items,
+                                                        bill.getAppointmentId(),
+                                                        bill.getDoctorName(),
+                                                        bill.getSpecialization(),
+                                                        bill.getAppointmentDate(),
+                                                        bill.getPatientName());
+                                })
+                                .toList();
         }
 
         @Transactional(readOnly = true)
         public List<BillResponseDto> getAllBills() {
 
-                List<Bill> bills = billRepository.findAllWithItems();
+                List<BillProjection> bills = billRepository.findAllBillProjections();
 
-                return bills.stream().map(bill -> {
+                if (bills.isEmpty()) {
+                        return List.of();
+                }
 
-                        Appointment appointment = appointmentRepository
-                                        .findById(bill.getAppointmentId())
-                                        .orElse(null);
+                List<Long> billIds = bills.stream()
+                                .map(BillProjection::getId)
+                                .toList();
 
-                        User doctor = userRepository
-                                        .findById(bill.getDoctorId())
-                                        .orElse(null);
+                List<BillItemProjection> itemProjections = billRepository.findItemsByBillIds(billIds);
 
-                        DoctorDetails doctorDetails = doctorDetailsRepository
-                                        .findByDoctor_Id(bill.getDoctorId())
-                                        .orElse(null);
+                Map<Long, List<BillItemDto>> itemsByBill = new HashMap<>();
 
-                        String patientName = null;
+                for (BillItemProjection item : itemProjections) {
 
-                        if (appointment != null) {
+                        itemsByBill
+                                        .computeIfAbsent(
+                                                        item.getBillId(),
+                                                        id -> new ArrayList<>())
+                                        .add(
+                                                        new BillItemDto(
+                                                                        item.getItemName(),
+                                                                        item.getQuantity(),
+                                                                        item.getPrice(),
+                                                                        item.getTotal()));
+                }
 
-                                if (Boolean.TRUE.equals(appointment.getIsGuest())) {
+                return bills.stream()
+                                .map(bill -> {
 
-                                        String firstName = appointment.getGuestFirstName() != null
-                                                        ? appointment.getGuestFirstName()
-                                                        : "";
+                                        List<BillItemDto> items = itemsByBill.getOrDefault(
+                                                        bill.getId(),
+                                                        List.of());
 
-                                        String lastName = appointment.getGuestLastName() != null
-                                                        ? appointment.getGuestLastName()
-                                                        : "";
-
-                                        patientName = (firstName + " " + lastName).trim();
-
-                                } else if (appointment.getPatient() != null) {
-
-                                        patientName = appointment.getPatient().getFirstName() + " "
-                                                        + appointment.getPatient().getLastName();
-                                }
-                        }
-
-                        List<BillItemDto> items = bill.getItems().stream()
-                                        .map(i -> new BillItemDto(
-                                                        i.getItemName(),
-                                                        i.getQuantity(),
-                                                        i.getPrice(),
-                                                        i.getTotal()))
-                                        .toList();
-
-                        return new BillResponseDto(
-                                        bill.getId(),
-                                        bill.getAmount(),
-                                        bill.getDiscount(),
-                                        bill.getTax(),
-                                        bill.getTotalAmount(),
-                                        bill.getStatus().name(),
-                                        bill.getBillDate(),
-                                        items,
-                                        bill.getAppointmentId(),
-                                        doctor != null
-                                                        ? doctor.getFirstName() + " " + doctor.getLastName()
-                                                        : null,
-                                        doctorDetails != null
-                                                        ? doctorDetails.getSpecialization()
-                                                        : null,
-                                        appointment != null
-                                                        ? appointment.getAppointmentDate()
-                                                        : null,
-                                        patientName);
-
-                }).toList();
+                                        return new BillResponseDto(
+                                                        bill.getId(),
+                                                        bill.getAmount(),
+                                                        bill.getDiscount(),
+                                                        bill.getTax(),
+                                                        bill.getTotalAmount(),
+                                                        bill.getStatus(),
+                                                        bill.getBillDate(),
+                                                        items,
+                                                        bill.getAppointmentId(),
+                                                        bill.getDoctorName(),
+                                                        bill.getSpecialization(),
+                                                        bill.getAppointmentDate(),
+                                                        bill.getPatientName());
+                                })
+                                .toList();
         }
 
         public void payBillByPatient(Long billId, Long patientId) {

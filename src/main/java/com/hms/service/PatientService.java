@@ -17,6 +17,7 @@ import com.hms.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -162,6 +163,7 @@ public class PatientService {
                 .toList();
     }
 
+    @Transactional
     public void bookAppointment(String email, AppointmentRequestDto request) {
 
         User patient = getUserByEmail(email);
